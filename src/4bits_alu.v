@@ -74,12 +74,12 @@ module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
                     if (op1 + op2 > 4'hF) sign_zero_carry_done[1] = 1'b1;
                     result = A + B ;
                   end
-               endcase(operation)
+               endcase
 
                 sign_zero_carry_done[0] = 1'b1;
                 alu_state <= GET_FIRST_OPERAND;
             end
-         endcase(alu_state)
+         endcase
       end
     end
 
