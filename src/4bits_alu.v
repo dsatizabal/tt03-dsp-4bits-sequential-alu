@@ -2,9 +2,9 @@
 
 module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
 
-   wire clk			   = io_in[7];
-   wire reset			= io_in[6];
-   wire [3:0]data_in	= io_in[3:0];
+   wire clk			   = io_in[0];
+   wire reset			= io_in[1];
+   wire [3:0]data_in	= io_in[7:4];
 
    reg [3:0] result;
    reg [3:0] sign_zero_carry_done;
@@ -23,6 +23,7 @@ module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
       if (reset) begin
          alu_state <= GET_FIRST_OPERAND;
          sign_zero_carry_done <= 4'b0000;
+         result <= 4'b0000;
       end else begin
          case (alu_state)
             GET_FIRST_OPERAND: begin
