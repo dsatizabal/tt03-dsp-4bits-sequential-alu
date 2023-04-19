@@ -1,6 +1,6 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
-module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
+module dsp_4bits_seq_alu(input [7:0] io_in, output [7:0] io_out);
 
    wire clk			   = io_in[0];
    wire reset			= io_in[1];
@@ -15,9 +15,9 @@ module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
    reg [3:0] op2;
    reg [3:0] operation;
 
-   localparam GET_FIRST_OPERAND         = 4'b0000;
-   localparam GET_SECOND_OPERAND        = 4'b0001;
-   localparam GET_AND_PERFORM_OPERATION = 4'b0010;
+   localparam GET_FIRST_OPERAND         = 4'b0001;
+   localparam GET_SECOND_OPERAND        = 4'b0010;
+   localparam GET_AND_PERFORM_OPERATION = 4'b0100;
 
    always @(posedge clk) begin
       if (reset) begin
@@ -39,45 +39,45 @@ module dsp_4its_seq_alu(input [7:0] io_in, output [7:0] io_out);
                case(operation)
                   4'b0000: begin
                      if (op1 + op2 > 4'hF) sign_zero_carry_done[1] = 1'b1;
-                     result = A + B;
+                     result <= op1 + op2;
                   end
                   4'b0001: begin
                      if (op1 < op2) sign_zero_carry_done[3] = 1'b1;
                      if (op1 == op2) sign_zero_carry_done[2] = 1'b1;
-                     result = A - B;
+                     result <= op1 - op2;
                   end
                   4'b0010: begin
                      if (op1 & op2 > 4'hF) sign_zero_carry_done[1] = 1'b1;
                      if (op1 & op2 == 4'h0) sign_zero_carry_done[2] = 1'b1;
-                     result = A & B;
+                     result <= op1 & op2;
                   end
                   4'b0011: begin
                      if (op1 | op2 > 4'hF) sign_zero_carry_done[1] = 1'b1;
                      if (op1 | op2 == 4'h0) sign_zero_carry_done[2] = 1'b1;
-                     result = A | B;
+                     result <= op1 | op2;
                   end
                   4'b0100: begin
                      if (~op1 > 4'hF) sign_zero_carry_done[1] = 1'b1;
                      if (~op1 == 4'h0) sign_zero_carry_done[2] = 1'b1;
-                     result = ~A;
+                     result <= ~op1;
                   end
                   4'b0101: begin
                      if (~(op1 & op2) > 4'hF) sign_zero_carry_done[1] = 1'b1;
                      if (~(op1 & op2) == 4'h0) sign_zero_carry_done[2] = 1'b1;
-                     result = A & B;
+                     result <= op1 & op2;
                   end
                   4'b0110: begin
                      if (~(op1 | op2) > 4'hF) sign_zero_carry_done[1] = 1'b1;
                      if (~(op1 | op2) == 4'h0) sign_zero_carry_done[2] = 1'b1;
-                     result = A | B;
+                     result <= op1 | op2;
                   end
                   default: begin
                     if (op1 + op2 > 4'hF) sign_zero_carry_done[1] = 1'b1;
-                    result = A + B ;
+                    result <= op1 + op2;
                   end
                endcase
 
-                sign_zero_carry_done[0] = 1'b1;
+                sign_zero_carry_done[0] <= 1'b1;
                 alu_state <= GET_FIRST_OPERAND;
             end
          endcase
