@@ -2,50 +2,48 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-ops1    = [1, 1, 2, 3]
-ops2    = [2, 1, 2, 3]
-opcodes = [0, 0, 0, 0]
-results = [3, 2, 4, 6]
-flags   = [1, 1, 1, 1]
+# 2 - 2 = 0 with zero and done flags
+# 1 + 1 = 2 with done flag
+# 2 + 2 = 4 with done flag
+ops1    = [2, 1, 2, 4, 5, 3]
+ops2    = [2, 1, 2, 1, 4, 2]
+opcodes = [1, 0, 0, 3, 2, 1]
+results = [0, 2, 4, 5, 5, 0]
+flags   = [5, 1, 1, 7, 1, 9] #sign_zero_carry_done
 
 @cocotb.test()
 async def test_4bits_alu(dut):
     dut._log.info("start")
 
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.clk, 1, units="us")
 
     cocotb.start_soon(clock.start())
 
     dut._log.info("Resetting ALU")
 
+    dut.process.value = 0
     dut.reset.value = 1
     await ClockCycles(dut.clk, 2)
     dut.reset.value = 0
+    await ClockCycles(dut.clk, 2)
 
     dut._log.info("Iterate through operations")
 
     for i in range(4):
-        dut._log.info(f"Beginning {dut.alu_state.value}")
+        dut.process.value = 1
 
-        dut.data_in.value = ops1[i]
+        dut.data.value = ops1[i]
         await ClockCycles(dut.clk, 1)
 
-        dut._log.info(f"After first clk {dut.alu_state.value}")
-
-        dut.data_in.value = ops2[i]
+        dut.data.value = ops2[i]
         await ClockCycles(dut.clk, 1)
 
-        dut._log.info(f"After second clk {dut.alu_state.value}")
+        dut.data.value = opcodes[i]
+        await ClockCycles(dut.clk, 2)
 
-        dut.data_in.value = opcodes[i]
+        dut.process.value = 0
         await ClockCycles(dut.clk, 1)
 
-        dut._log.info(f"After third clk {dut.alu_state.value}")
+        assert dut.result.value == results[i], f'Invalid result at position {i}, expected {results[i]} got {dut.result.value}'
+        assert dut.flags.value == flags[i], f'Invalid flag at position {i}, expected {flags[i]} got {dut.flags.value}'
 
-        assert dut.result.value == results[i], f'Invalid result at position {i}, expected {results[i]} got {dut.result.value}, ALU state was {dut.alu_state.value}, {dut.op1.value}, {dut.op2.value}, {dut.operation.value}'
-        assert dut.sign_zero_carry_done.value == flags[i], f'Invalid flag at position {i}, expected {flags[i]} got {dut.sign_zero_carry_done.value}'
-
-        dut.reset.value = 1
-        await ClockCycles(dut.clk, 1)
-        dut.reset.value = 0
-        dut._log.info(f"After final reset {dut.alu_state.value}")
