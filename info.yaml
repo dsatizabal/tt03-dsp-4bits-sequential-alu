@@ -30,19 +30,25 @@ documentation:
 
 # A description of what the inputs do
   inputs:
-    - io_in[0] AS clock
-    - io_in[1] AS reset
-    - io_in[2] AS enabled
-    - io_in[3] AS Anonymous
-    - io_in[7:4] AS Op1 / Op2 / opcode (sequentially)
+    - clock
+    - reset
+    - enabled
+    - none
+    - Opx_opcode_0
+    - Opx_opcode_1
+    - Opx_opcode_2
+    - Opx_opcode_3
 
 # A description of what the outputs do
   outputs:
-    - io_out[3:0] AS result
-    - io_out[4] AS Done Flag
-    - io_out[5] AS Carry Flag
-    - io_out[6] AS Zero Flag
-    - io_out[7] AS Sign Flag
+    - result_0
+    - result_1
+    - result_2
+    - result_3
+    - done_flag
+    - carry_flag
+    - zero_flag
+    - sign_flag
 
 # The following fields are optional
   tag:          ""      # comma separated list of tags: test encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
