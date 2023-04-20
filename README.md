@@ -2,7 +2,7 @@
 
 # 4-bits sequential ALU
 
-This ALU takes 4-bits wide operators and operation sequentially trhough the 4 MSBs of io_in (please refer to TinyTapeout specs for details)
+This ALU takes 4-bits wide operators and opcode sequentially trhough the 4 MSBs of io_in (please refer to TinyTapeout specs for details)
 
 Supported operations are:
 
@@ -16,7 +16,7 @@ Supported operations are:
 
 ## pins
 
-All pins follow positive logic so active state is a high voltage level or "1"
+All pins follow positive logic so active state is a high voltage level
 
 _inputs_
 - io_in[0] = external clock
@@ -35,20 +35,20 @@ _outputs_
 
 ## Operation
 
-When reset input is set to high for a clock cycle, the result and al flags are set to 0 as default values
+When reset input is set to high for a clock cycle, the _result_ and all flags are set to 0 as default values
 
-If clock continues but enabled input is low then ALU does not operates
+If _clock_ continues but _enabled_ input is low then ALU does not operates
 
-When enabled input is set to high the ALI will fetch sequentially operand1, operand2 and operation on every positive edge of the clock, it takes an additional clock to calculate and output results.
+When _enabled_ input is set to high, the ALU will fetch sequentially operand_1, operand_2 and opcode on every positive edge of the _clock_, it takes an additional clock cycle to calculate and output results.
 
 It is important to note that:
 
-- If no clock signal is given the ALU won't operate properly
-- For operations that require a single operand, like Logical NOT, it's still required to provide the second operand and the corresponding clock to fetch that, the value of this second operand is ignored to perform such operations.
+- If no _clock_ signal is given the ALU won't operate.
+- For operations that require a single operand, like Logical NOT, it's still required to provide the second operand and the corresponding clock cycle to fetch it, the value of this second operand is ignored when performing such operations.
 
-If the result of the operation is 0 the the zero flag will be activated.
-It is verified that the result involves sign and carry for SUM and SUB opreations and the corresponding flag is set to high if applicable.
-On the 4th clock cycle of eveery operation the calculations are performed, result placed for output and DONE flag is set to high.
+If the _result_ of the operation is 0 the the _zero flag_ will be activated.
+It is verified that the _result_ involves sign and/or _carry_ for SUM and SUB operations, the corresponding flag is set to high if applicable.
+On the 4th clock cycle of every operation the calculations are performed, _result_ placed for output and _done flag_ is set to high.
 
 ## Acknowldgements
 
