@@ -73,6 +73,23 @@ module dsp_4bits_seq_alu(input [7:0] io_in, output [7:0] io_out);
                         if (4'(~(op1 | op2)) == 0) sign_zero_carry_done[2] <= 1'b1;
                         result <= ~(op1 | op2);
                      end
+                     4'b0111: begin // RL in loop
+                        if (4'({ op1[2:0], op1[3] }) == 0) sign_zero_carry_done[2] <= 1'b1;
+                        result <= { op1[2:0], op1[3] };
+                     end
+                     4'b1000: begin // RR in lopp
+                        if (4'({ op1[0], op1[3:1] }) == 0) sign_zero_carry_done[2] <= 1'b1;
+                        result <= { op1[0], op1[3:1] };
+                     end
+                     4'b1001: begin // swap
+                        if (4'({ op1[1:0], op1[3:2] }) == 0) sign_zero_carry_done[2] <= 1'b1;
+                        result <= { op1[1:0], op1[3:2] };
+                     end
+                     4'b1010: begin // compare
+                        if (op1 == op2) result <= 4'b0001;
+                        if (op1 < op2) result <= 4'b0010;
+                        if (op1 > op2) result <= 4'b0100;
+                     end
                   endcase
 
                   sign_zero_carry_done[0] <= 1'b1;

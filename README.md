@@ -13,6 +13,10 @@ Supported operations are:
 - Logical NOT (opcode = 4)
 - Logical NAND (opcode = 5)
 - Logical NOR (opcode = 6)
+- Rotate Left (opcode = 7)
+- Rotate Right (opcode = 8)
+- Swap (opcode = 9)
+- Compare (opcode = 10)
 
 ## pins
 
@@ -49,6 +53,18 @@ It is important to note that:
 If the _result_ of the operation is 0 the the _zero flag_ will be activated.
 It is verified that the _result_ involves sign and/or _carry_ for SUM and SUB operations, the corresponding flag is set to high if applicable.
 On the 4th clock cycle of every operation the calculations are performed, _result_ placed for output and _done flag_ is set to high.
+
+## Details for some operations
+
+The operation _RL_ and _RR_ rotate the operand_1 in a loop, that is, if operand_1 is _0001_ and you perform RL operation the _result_ will be _0010_, for RR operation the _result_ will be _1000_, operannd_2 is ignored.
+
+The operation SWAP peforms a nibble-like swap operation for 8-bits register but for the 4-bits operand_1, that is, if operand_1 has the value _1000_ the _result_ will be _0010_, operannd_2 is ignored.
+
+The operation compare performs comparison for equal, greater than and lower that between operand_1 and operand_2 in that order, that is:
+
+- if operand_1 is euqal to operand_2 the _result_ will be 1
+- if operand_1 lower euqal than operand_2 the _result_ will be 2
+- if operand_1 is greater than operand_2 the _result_ will be 4
 
 ## Acknowldgements
 
