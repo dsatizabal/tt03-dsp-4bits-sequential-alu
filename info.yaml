@@ -21,19 +21,20 @@ documentation:
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-      Explain how your project works
+      The ALU takes 4-bits wide Operators and Operation sequentially with every clock cycle if the enabled signal is set to high, it takes an additional clock to output the result
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-      Explain how to test your project
+      Run `make` from the command line in the src directory to perform all tests suites, you must have Python, cocotb and Icarus Verilog installed
+      If you have GTK Wave installed you can run the command `make test_gtkwave` to generate the VCD output, the run `gtkwave tb.vcd` to see the waveforms
 
 # A description of what the inputs do
   inputs:
-    - io_in[7] AS clock
-    - io_in[6] AS reset
-    - io_in[5] AS Anonymous
-    - io_in[4] AS Anonymous
-    - io_in[3:4] AS Op1 / Op2 / opcode (sequentially)
+    - io_in[0] AS clock
+    - io_in[1] AS reset
+    - io_in[2] AS enabled
+    - io_in[3] AS Anonymous
+    - io_in[7:4] AS Op1 / Op2 / opcode (sequentially)
 
 # A description of what the outputs do
   outputs:

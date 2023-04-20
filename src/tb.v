@@ -10,7 +10,7 @@ module tb (
     // testbench is controlled by test.py
     input clk,
     input reset,
-    input process,
+    input enabled,
     input [3:0] data,
     output [7:4] result,
     output [3:0] flags
@@ -24,7 +24,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {data, 1'b0, process, reset, clk};
+    wire [7:0] inputs = {data, 1'b0, enabled, reset, clk};
     wire [7:0] outputs;
     assign flags = outputs[7:4];
     assign result = outputs[3:0];
