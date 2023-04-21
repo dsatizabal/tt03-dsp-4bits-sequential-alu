@@ -2,7 +2,7 @@
 
 # 4-bits sequential ALU
 
-This ALU takes 4-bits wide operators and opcode sequentially trhough the 4 MSBs of io_in (please refer to TinyTapeout specs for details)
+This ALU takes 4-bits wide operators (2) and opcode (1) sequentially trhough the 4 MSBs of io_in (please refer to TinyTapeout specs for details).
 
 Supported operations are:
 
@@ -20,7 +20,7 @@ Supported operations are:
 
 ## pins
 
-All pins follow positive logic so active state is a high voltage level
+All pins follow positive logic so active state is a high voltage level.
 
 _inputs_
 - io_in[0] = external clock
@@ -36,19 +36,18 @@ _outputs_
 - io_in[6] = zero flag
 - io_in[7] = sign flag
 
-
 ## Operation
 
-When reset input is set to high for a clock cycle, the _result_ and all flags are set to 0 as default values
+When reset input is set to high for at least one clock cycle, the _result_ and all flags are set to 0 as default values.
 
-If _clock_ continues but _enabled_ input is low then ALU does not operates
+If _clock_ continues but _enabled_ input is low then ALU does not operates and maintains any previous state.
 
-When _enabled_ input is set to high, the ALU will fetch sequentially operand_1, operand_2 and opcode on every positive edge of the _clock_, it takes an additional clock cycle to calculate and output results.
+When _enabled_ input is set to high, the ALU will fetch sequentially operand_1, operand_2 and opcode on every positive edge of the _clock_, it takes an additional clock cycle to calculate and output results for a total of 4 clock cycles to perform every operation.
 
 It is important to note that:
 
 - If no _clock_ signal is given the ALU won't operate.
-- For operations that require a single operand, like Logical NOT, it's still required to provide the second operand and the corresponding clock cycle to fetch it, the value of this second operand is ignored when performing such operations.
+- For operations that require a single operand, like Logical NOT or rotation, it's still required to provide the second operand and the corresponding clock cycle to fetch it, the value of this second operand is ignored when performing such operations.
 
 If the _result_ of the operation is 0 the the _zero flag_ will be activated.
 It is verified that the _result_ involves sign and/or _carry_ for SUM and SUB operations, the corresponding flag is set to high if applicable.
@@ -56,14 +55,14 @@ On the 4th clock cycle of every operation the calculations are performed, _resul
 
 ## Details for some operations
 
-The operation _RL_ and _RR_ rotate the operand_1 in a loop, that is, if operand_1 is _0001_ and you perform RL operation the _result_ will be _0010_, for RR operation the _result_ will be _1000_, operannd_2 is ignored.
+The operationd _Rotate Left_ and _Rotate Right_ rotate the operand_1 in a loop, that is, if operand_1 is _1001_ and you perform RL operation the _result_ will be _0011_, for RR operation the _result_ will be _1100_, operand_2 is ignored.
 
-The operation SWAP peforms a nibble-like swap operation for 8-bits register but for the 4-bits operand_1, that is, if operand_1 has the value _1000_ the _result_ will be _0010_, operannd_2 is ignored.
+The operation _swap_ peforms a nibble-like swap operation for 8-bits register but for the 4-bits operand_1, that is, if operand_1 has the value _1100_ the _result_ will be _0011_, operannd_2 is ignored.
 
-The operation compare performs comparison for equal, greater than and lower that between operand_1 and operand_2 in that order, that is:
+The operation _compare_ performs comparison for equal, greater than and lower that between operand_1 and operand_2 in that order, that is:
 
-- if operand_1 is euqal to operand_2 the _result_ will be 1
-- if operand_1 lower euqal than operand_2 the _result_ will be 2
+- if operand_1 is equal to operand_2 the _result_ will be 1
+- if operand_1 lower than operand_2 the _result_ will be 2
 - if operand_1 is greater than operand_2 the _result_ will be 4
 
 ## Acknowldgements
